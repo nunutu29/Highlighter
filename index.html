@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Highlighter</title>
+		<script src="js/jquery-1.11.2.min.js"></script>
+		<script src="js/script.js"></script>		
+		<style>
+			.yellow{
+				background-color:yellow;
+			}
+			.red{
+				background-color:red;
+			}
+		</style>
+	</head>
+	<body>
+		<p id="p1">Hello my name is Johnny, and this is a highlighter demo.</p>
+	</body>
+	<script type="text/javascript">
+	$(document).ready(
+		function(){
+			var highlight = new Highlighter("yellow");
+			highlight.byID("p1", 0, 56);
+			highlight = new Highlighter("red");
+			highlight.byID("p1", 10, 20);
+		}
+	);
+	</script>
+</html>
