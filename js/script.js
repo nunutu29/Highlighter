@@ -22,6 +22,15 @@ Highlighter.prototype.byID = function(id, start, end){
 	this.WrapNode(targetNode);
 };
 
+Highlighter.prototype.byText = function(text){
+	var context = this;
+	$('body *').contents().filter(function() { 
+		return this.nodeType == 3 && this.nodeValue.length > 0 && this.nodeValue.indexOf(text) != -1 && this.parentNode.nodeName != "SCRIPT"; 
+	}).each(function(){
+		$(this).replaceWith(this.nodeValue.replace(new RegExp(text,"g"), '<span class="'+context.CLASS+'">'+text+'</span>'));
+	});
+};
+
 Highlighter.prototype.WrapNode = function(node){
 	var context = this;
 	$(node).contents().each(function() {
