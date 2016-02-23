@@ -3,100 +3,86 @@ function Highlighter(className){
 	this.CLASS = className;
 	this.START = null;
 	this.END = null;
-	this.COUNTER = 0;
-};
-
-Highlighter.prototype.COUNT = function(value){
-	if(value == undefined || value == null || value == "")
-		return this.COUNTER;
-	else
-		this.COUNTER += value;
+	this.COUNT = 0;
 };
 
 Highlighter.prototype.byID = function(id, start, end){
+	//creating xpath
 	var targetXpath = '//*[@id="' + id + '"]';
-	var targetNode = $(document.evaluate(targetXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
-	this.COUNT(0);
+	//getting the dom element
+	var targetNode = document.evaluate(targetXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;	
+	this.COUNT = 0;
 	this.START = start;
 	this.END = end;
+	//start highlighter
 	this.WrapNode(targetNode);
 };
 
-Highlighter.prototype.byText = function(text){
-	var context = this;
-	$('body *').contents().filter(function() { 
-		return this.nodeType == 3 && this.nodeValue.length > 0 && this.nodeValue.indexOf(text) != -1 && this.parentNode.nodeName != "SCRIPT"; 
-	}).each(function(){
-		$(this).replaceWith(this.nodeValue.replace(new RegExp(text,"g"), '<span class="'+context.CLASS+'">'+text+'</span>'));
-	});
-};
-
-Highlighter.prototype.WrapNode = function(node){
-	var context = this;
-	$(node).contents().each(function() {
-		if(this.nodeType == 3)
-		{
-			var text = $(this).text();
-			if(context.COUNT() >= context.END) return;
-			if((context.COUNT() + text.length) <= context.START || text.trim() == ""){
-				context.COUNT(text.length);
-				return;
+Highlighter.prototype.WrapNode = function(parentNode){
+	var len = parentNode.childNodes.length;
+	for(var i = 0; i < len; i++){
+		var child = parentNode.childNodes[i];
+		if(child.nodeType == 3){
+			var text = child.nodeValue;
+			if(this.COUNT >= this.END) continue;
+			if((this.COUNT + text.length) <= this.START || text.trim() == ""){
+				this.COUNT += text.length;
+				continue;
 			}
+			
 			var startWrap = 0;
 			var endWrap = -1;
 			
-			if(context.COUNT() < context.START)
-				startWrap = context.START - context.COUNT();
+			if(this.COUNT < this.START)
+				startWrap = this.START - this.COUNT;
 			
-			if((context.COUNT() + text.length) > context.END)
-				endWrap += context.END - context.COUNT();
+			if((this.COUNT + text.length) > this.END)
+				endWrap += this.END - this.COUNT;
 			
-			var parentNode = this.parentNode;
-			if(parentNode.nodeType == 1 && parentNode.classList.contains("highlighted"))
+			if(parentNode.nodeType == 1 && parentNode.className.indexOf("highlighted") != -1)
 			{
-				var wrapMid = $(parentNode);
-				var target = [];
-				
 				if(startWrap > 0){
-					var wrapLeft = $("<span>");
-					wrapLeft.attr("class", wrapMid.attr("class"));
-					wrapLeft.text(text.slice(0,startWrap));
-					wrapLeft.css('background', wrapMid.css('background'));
-					wrapMid.before(wrapLeft);
+					var wrapLeft = document.createElement("SPAN");
+					wrapLeft.className = parentNode.className;
+					wrapLeft.appendChild(document.createTextNode(text.slice(0, startWrap)));
+					wrapLeft.style.background = parentNode.style.background;
+					parentNode.replaceChild(wrapLeft, child);
 				}
-				if (endWrap != -1) {
-					var wrapRight = $("<span>");
-					wrapRight.attr('class', wrapMid.attr('class'));
-					wrapRight.css('background', wrapMid.css('background'));
-					wrapRight.text(text.slice(endWrap));
-					wrapMid.after(wrapRight);
-					wrapMid.text(text.slice(startWrap,endWrap));
+				if(endWrap != -1){
+					var wrapRight = document.createElement("SPAN");
+					wrapRight.className = parentNode.className;
+					wrapRight.style.background = parentNode.style.background;
+					wrapRight.appendChild(document.createTextNode(text.slice(endWrap)));
+					parentNode.replaceChild(wrapRight, child);
+					parentNode.insertBefore(document.createTextNode(text.slice(startWrap, endWrap)), wrapRight);
 				}
 				else
-					wrapMid.text(text.slice(startWrap));
-				
-				if(!wrapMid.hasClass(context.CLASS)) wrapMid.addClass(context.CLASS);
-				if(!wrapMid.hasClass("h_overlap")) wrapMid.addClass("h_overlap");
-				//add here a gradient function
+					parentNode.appendChild(document.createTextNode(text.slice(startWrap)));
+			
+				if(parentNode.className.indexOf(this.CLASS) == -1) parentNode.className += " " + this.CLASS;
+				if(parentNode.className.indexOf("h_overlap") == -1) parentNode.className += " h_overlap";
 			}
 			else
 			{
-				var wrapElement = $("<span>").addClass("highlighted " + context.CLASS);
-				$(this).replaceWith(wrapElement);
+				var wrapElement = document.createElement("SPAN");
+				wrapElement.className = "highlighted " + this.CLASS;
+				parentNode.replaceChild(wrapElement, child);
+				if(startWrap > 0) 
+					//insert Before
+					wrapElement.parentNode.insertBefore(document.createTextNode(text.slice(0, startWrap)), wrapElement);
 				
-				if(startWrap > 0)
-					wrapElement.before(text.slice(0, startWrap));
-				
-				if(endWrap > 0){
-					wrapElement.text(text.slice(startWrap, endWrap));
-					wrapElement.after(text.slice(endWrap));
+				if(endWrap > 0)
+				{
+					wrapElement.appendChild(document.createTextNode(text.slice(startWrap, endWrap)));
+					//insert After
+					wrapElement.parentNode.insertBefore(document.createTextNode(text.slice(endWrap)), wrapElement.nextSibling);
 				}
 				else
-					wrapElement.text(text.slice(startWrap));
+					wrapElement.appendChild(document.createTextNode(text.slice(startWrap)));
 			}
-			context.COUNT(text.length);
+			this.COUNT += text.length;
 		}
 		else
-			context.WrapNode(this);
-	});
-};
+			this.WrapNode(child);
+	}
+}
