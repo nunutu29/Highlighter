@@ -1,1 +1,1 @@
-# Highlighter
+Highlight part of text without any extension.

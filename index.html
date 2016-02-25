@@ -3,7 +3,6 @@
 	<head>
 		<title>Highlighter</title>
 		<script src="js/script.js"></script>
-		<link rel="StyleSheet" type="text/css" href="css/colors.css" title="Colors" />
 	</head>
 	<body>
 		<p id="p1">Hello <b>my</b> <i>name</i> is Johnny, and this is a highlighter <b>demo</b>.</p>
@@ -11,10 +10,11 @@
 	<script type="text/javascript">
 	
 	document.addEventListener("DOMContentLoaded", function(event) { 
-		var highlight = new Highlighter("yellow");
-		highlight.byID("p1", 10, 45);
-		highlight = new Highlighter("red");
-		highlight.byID("p1", 12, 17);
+		var h = new Highlighter();
+		h.addStyle("red", "rgba(255, 0, 0, .5)").addStyle("green", "rgba(0, 128, 0, .5)").addStyle("yellow", "rgba(255, 255, 0, .5)");
+		h.style("red").byID("p1", 0, 20)
+		.style("green").byID("p1", 10, 45)
+		.style("yellow").byID("p1", 15, 50);
 	});
 	</script>
 </html>
