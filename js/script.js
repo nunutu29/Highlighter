@@ -1,3 +1,11 @@
+//Summary
+//addStyle(classname, bgcolor) -> ad a style to the array
+//style(classname) -> declare what style to use !important!!
+//byID(id,start,end) -> highlight in the element "ID" from "start" to "end"
+//byID(id,start) -> highlight in the element "ID" from "start"
+//byID(id) -> highlight in the element "ID"
+//byClass(class, start, end) -> same as id, but insteed of 1 element, cosiders all
+
 function Highlighter(){
 	//the className is the class that will be assigned to the elements
 	//DO NOT REMOVE SPACES in overLap
@@ -33,12 +41,31 @@ Highlighter.prototype.byID = function(id, start, end){
 	//getting the dom element
 	var targetNode = document.evaluate(targetXpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;	
 	this.COUNT = 0;
-	this.START = start;
-	this.END = end;
+	this.START = start || 0;
+	this.END = end || targetNode.textContent.length;
 	//start highlighter
 	this.WrapNode(targetNode);
 	return this;
 };
+
+Highlighter.prototype.byClass = function(clas, start, end){
+	if(this.cssIndex == -1) return null;
+	//creating xpath
+	var targetXpath = '//*[@class="' + clas + '"]';
+	//getting the dom element
+	var targetNode = document.evaluate(targetXpath, document, null, XPathResult.ANY_TYPE, null);
+	this.START = start || 0;
+	var nodes = [], node;
+	while((node = targetNode.iterateNext())) nodes.push(node);
+	
+	for(var i = 0; i < nodes.length; i++){
+		this.COUNT = 0;
+		this.END = end || nodes[i].textContent.length;
+		//start highlighter
+		this.WrapNode(nodes[i]);
+	}
+	return this;
+}
 
 Highlighter.prototype.WrapNode = function(parentNode){
 	var len = parentNode.childNodes.length;

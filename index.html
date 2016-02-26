@@ -5,11 +5,11 @@
 		<script src="js/script.js"></script>
 	</head>
 	<body>
-		<p id="p1">This is a <b>red</b> text.</p>
+		<p id="p1">This is a <b class="me">red</b> text.</p>
 		<p id="p2">This is a lightblue text.</p>
-		<p id="p3">This is red and this is lightblue and now both together.</p>
+		<p id="p3" class="me">This is red and this is lightblue and now both together.</p>
 		<p id="p4">This is red and this is lightblue. Wow and all with yellow also.</p>
-		<p id="p5">This is red and this is lightblue. Wow and all with yellow also. Let's add some green to the full text.</p>
+		<p id="p5">This is <b><i>red</i></b> and this is <i class="me">lightblue</i>. Wow and all with yellow also. Let's add some green to the full text.</p>
 	</body>
 	<script type="text/javascript">
 	
@@ -20,23 +20,25 @@
 		.addStyle("green", "rgba(0, 128, 0, .5)")
 		.addStyle("lightblue", "rgba(0, 188, 212, .5)")
 		.addStyle("yellow", "rgba(255, 255, 0, .5)");
+		//h.style("red").byClass("me", 2);
+		
 		//Color
 		//p1
-		h.style("red").byID("p1", 0, 19);
+		//h.style("red").byID("p1", 0, 19);
 		//p2
-		h.style("lightblue").byID("p2", 0, 25);
+		//h.style("lightblue").byID("p2", 0, 25);
 		//p3
-		h.style("red").byID("p3", 0, 11).byID("p3", 38, 56);
-		h.style("lightblue").byID("p3", 16,  33).byID("p3", 38, 56);
+		//h.style("red").byID("p3", 0, 11).byID("p3", 38, 56);
+		//h.style("lightblue").byID("p3", 16,  33).byID("p3", 38, 56);
 		//4
-		h.style("red").byID("p4", 0, 11).byID("p4", 35, 58);
-		h.style("lightblue").byID("p4", 16,  33).byID("p4", 35, 58);
-		h.style("yellow").byID("p4", 52,  64);
+		//h.style("red").byID("p4", 0, 11).byID("p4", 35, 58);
+		//h.style("lightblue").byID("p4", 16,  33).byID("p4", 35, 58);
+		//h.style("yellow").byID("p4", 52,  64);
 		//p5
-		h.style("red").byID("p5", 0, 11).byID("p5", 35, 58);
-		h.style("lightblue").byID("p5", 16,  33).byID("p5", 35, 58);
-		h.style("yellow").byID("p5", 52,  64);
-		h.style("green").byID("p5", 0,  103);
+		//h.style("red").byID("p5", 0, 11).byID("p5", 35, 58);
+		//h.style("lightblue").byID("p5", 16,  33).byID("p5", 35, 58);
+		//h.style("yellow").byID("p5", 52,  64);
+		//h.style("green").byID("p5", 26);
 	});
 	</script>
 </html>
