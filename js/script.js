@@ -1,3 +1,7 @@
+/***********************************************/
+/*Author: URSACHI ION                          */
+/*Republic of Moldova  						   */
+/***********************************************/
 //Summary
 //addStyle(classname, bgcolor) -> ad a style to the array
 //style(classname) -> declare what style to use !important!!
